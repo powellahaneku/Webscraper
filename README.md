@@ -1,4 +1,4 @@
-# Code Explanation
+# Web Scrapper ETL Tool
 
 ## Purpose
 The JavaScript code serves as a web scraper to extract and analyze student information from a specific web interface. It automates the process of gathering data related to students and their academic records.

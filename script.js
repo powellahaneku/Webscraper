@@ -11,6 +11,17 @@ const academicYear = '2023' //This is the academic year of the student
 const studentsNotFound = []
 
 
+// ///
+// function academicYearTranslate(){
+// 	const resultYear = []
+// 	if (String(year)[0]>1){
+// 		resultYeay.push('0')
+// 	}
+// 	if (String(year)[2]>1){
+// 		resultYear.push('0')
+// 	}
+// }
+
 function fixList(input) {
   let fixed = input.split(' ');
   for (let i = 0; i < fixed.length; i++) {

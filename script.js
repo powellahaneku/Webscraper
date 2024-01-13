@@ -23,7 +23,7 @@ const studentsNotFound = []
 // }
 
 function fixList(input) {
-  let fixed = input.split(' ');
+  let fixed = input.split('\n');
   for (let i = 0; i < fixed.length; i++) {
     fixed[i] = parseInt(fixed[i], 10); // Use parseInt and assign back to the array element
   }

@@ -6,7 +6,7 @@ The JavaScript code serves as a web scraper to extract and analyze student infor
 ## Initial Instructions
 1. **Alert and Instructions**: Upon execution, the code displays an alert guiding the user and providing instructions on how to use the tool effectively.
 
-2. **Input Prompt**: Requests the user to input a list of student IDs separated by spaces. The provided IDs serve as the basis for data extraction.
+2. **Input Prompt**: Requests the user to input a list of student IDs copied from an Excel sheet. The provided IDs serve as the basis for data extraction.
 
 ## Data Processing Functions
 3. **Fix List Function**: Converts the input string into an array of integers representing student IDs by splitting the input string and converting the substrings to integers.

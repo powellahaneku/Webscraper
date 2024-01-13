@@ -23,7 +23,7 @@ const studentsNotFound = []
 // }
 
 function fixList(input) {
-  let fixed = input.split('\n');
+  let fixed = input.split('\r\n');
   for (let i = 0; i < fixed.length; i++) {
     fixed[i] = parseInt(fixed[i], 10); // Use parseInt and assign back to the array element
   }
@@ -98,6 +98,30 @@ async function start() {
 	  console.log('Done')
   }
 }
+
+
+function academicPlan(col){
+	switch(col){
+		case 'major':
+			var major = document.querySelector("#CU_SIQSRI_ACPLN\\$scroll\\$0 > tbody > tr:nth-child(2) > td > table > tbody").childNodes[2].childNodes[15].innerText
+			return major
+		case 'institutionCode':
+			var institutionCode = document.querySelector("#CU_SIQSRI_ACPLN\\$scroll\\$0 > tbody > tr:nth-child(2) > td > table > tbody").childNodes[2].childNodes[1].innerText
+			return institutionCode
+		case 'semesterCode':
+			var semesterCode = document.querySelector("#CU_SIQSRI_ACPLN\\$scroll\\$0 > tbody > tr:nth-child(2) > td > table > tbody").childNodes[2].childNodes[11].innerText
+			return semesterCode
+		case 'academicStatus':
+			var academicStatus = document.querySelector("#CU_SIQSRI_ACPLN\\$scroll\\$0 > tbody > tr:nth-child(2) > td > table > tbody").childNodes[2].childNodes[17].innerText
+			return academicStatus
+		case 'effectiveDate':
+			var effectiveDate = document.querySelector("#CU_SIQSRI_ACPLN\\$scroll\\$0 > tbody > tr:nth-child(2) > td > table > tbody").childNodes[2].childNodes[7].innerText
+			return effectiveDate
+
+	}
+}
+
+
 
 //Personal Info
 
@@ -367,7 +391,7 @@ function updateFoundlist(object){
 	localStorage.setItem('_listFound',JSON.stringify(listFound))
 }
 
-function Person(empId, fname, lname, email1, email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades) {
+function Person(empId, fname, lname, email1, email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades,institutionCode,semesterCode,academicStatus,major,effectiveDate) {
 	this.empId = empId;
     this.fname = fname;
     this.lname = lname;
@@ -388,6 +412,11 @@ function Person(empId, fname, lname, email1, email2,phone,gpa,minGPA,maxGPA,diff
 	this.compareResult = compareResult;
 	this.specificGradesCount = specificGradesCount;
 	this.riskGrades = riskGrades;
+	this.institutionCode = institutionCode;
+	this.semesterCode = semesterCode;
+	this.academicStatus = academicStatus;
+	this.major = major;
+	this.effectiveDate = effectiveDate;
 }
 
 function findInfo(studentID,gpaTreshold) {
@@ -395,15 +424,15 @@ function findInfo(studentID,gpaTreshold) {
     try {
 		const empId = personalInfo('empId')
         const fullName = personalInfo('fullName')
-        const email1 = personalInfo('email1')
-        const email2 =personalInfo('email2')
+        const email1 = personalInfo('email1').toLowerCase()
+        const email2 =personalInfo('email2').toLowerCase()
 		const phone = personalInfo('phone1') === null ? personalInfo('phone2') : personalInfo('phone1')
 		const gpa = cumulativeGPA()
 		const minGPA = cumulativeGPA('min')
 		const maxGPA = cumulativeGPA('max')
 		const diffGPA = cumulativeGPA('diff')
 		const riskGPA = cumulativeGPA('risk',gpaTreshold)
-		const recentSI = serviceIndicator('recent')
+		const recentSI = serviceIndicator('recent').replace('Description',"")
 		const allSI = serviceIndicator()	
 		const countSI = serviceIndicator('count')
 		const riskSI = serviceIndicator('risk')
@@ -412,13 +441,19 @@ function findInfo(studentID,gpaTreshold) {
 		const compareResult = countGrades('compareGrades');
 		const specificGradesCount = countGrades('countSpecificGrades');
 		const riskGrades = countGrades('riskStatus');
+		const institutionCode = academicPlan('institutionCode');
+		const semesterCode = academicPlan('semesterCode');
+		const academicStatus = academicPlan('academicStatus');
+		const major = academicPlan('major');
+		const effectiveDate = academicPlan('effectiveDate');
+		
 
 		// //Catch if data not found
 		// email1 === undefined ? personalInfo('otherEmail') : null
 		// email2 === undefined ? personalInfo('otherEmail') : null
 
-		const finds = [Number(empId),fullName[0],fullName[1],email1,email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades]
-        const personInfo = new Person(Number(empId),fullName[0],fullName[1],email1,email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades);
+		const finds = [Number(empId),fullName[0],fullName[1],email1,email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades,institutionCode,semesterCode,academicStatus,major,effectiveDate]
+        const personInfo = new Person(Number(empId),fullName[0],fullName[1],email1,email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades,institutionCode,semesterCode,academicStatus,major,effectiveDate);
 		console.log(`Found ${studentID}`);
 		const isFound = true
         return personInfo;

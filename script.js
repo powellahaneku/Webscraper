@@ -1,7 +1,7 @@
 // Written by Powell Ahaneku, Medgar Evers College Alumn. Financial Economics BS
 
 
-alert("QUICK GUIDE: \n\nWelcome, let's get you started!\n\nRemember that the EmpID should all be separated by spaces before pasting it in. (I usually use chat GPT for that)\n\nAlso, sometimes the DOM loads faster if you click the ID input box and right click \"inspect\" it before starting this code. Do that if this session crashes")
+alert("QUICK GUIDE: \n\nWelcome, let's get you started!\n\nYou can copy data from your excel sheet.\n\nAlso, sometimes the DOM loads faster if you click the ID input box and right click \"inspect\" it before starting this code. Do that if this session crashes")
 ///
 var input = prompt("Student List: ");
 
@@ -54,6 +54,7 @@ function backToSearchPage(){
 		console.log(`Not Found: ${removeDuplicates(studentsNotFound) }`)
 		console.log('Downloading CSV...')
 		downloadExcel(listFound, "data.csv")
+		exportListToTxt(studentsNotFound, 'not_found.txt')
 		// Check if the key exists in local storage
 		if (localStorage.getItem('_listFound')) {
 			// Remove the key from local storage
@@ -89,6 +90,33 @@ function downloadExcel(data, filename) {
 
   link.click();
 }
+
+function exportListToTxt(list, fileName) {
+  // Convert the array of objects to a newline-separated JSON-formatted string
+  var txtContent = list.map(obj => JSON.stringify(obj)).join('\n');
+
+  // Create a Blob containing the text data
+  var blob = new Blob([txtContent], { type: 'text/plain' });
+
+  // Create a link element
+  var link = document.createElement('a');
+
+  // Set the link's href to a data URL representing the Blob
+  link.href = window.URL.createObjectURL(blob);
+
+  // Set the download attribute to specify the file name
+  link.download = fileName || 'exported_data.txt';
+
+  // Append the link to the document
+  document.body.appendChild(link);
+
+  // Trigger a click on the link to prompt the user to download the file
+  link.click();
+
+  // Remove the link from the document
+  document.body.removeChild(link);
+}
+
 
 
 

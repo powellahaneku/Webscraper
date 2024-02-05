@@ -3,6 +3,7 @@
 ## Purpose
 The JavaScript code serves as a web scraper to extract and analyze student information from a specific web interface. It automates the process of gathering data related to students and their academic records.
 
+<button href=""><button/>
 ## Initial Instructions
 1. **Alert and Instructions**: Upon execution, the code displays an alert guiding the user and providing instructions on how to use the tool effectively.
 

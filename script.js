@@ -2,25 +2,14 @@
 
 
 alert("QUICK GUIDE: \n\nWelcome, let's get you started!\n\nYou can copy data from your excel sheet.\n\nAlso, sometimes the DOM loads faster if you click the ID input box and right click \"inspect\" it before starting this code. Do that if this session crashes")
-///
+
 var input = prompt("Student List: ");
 
-//Risk Metrics
+// Metrics
 const gpaTreshold = 2.3 //GPA's under this will be flagged
 const academicYear = '2023' //This is the academic year of the student
-const studentsNotFound = []
+const studentsNotFound = [] //Students that are not found 
 
-
-// ///
-// function academicYearTranslate(){
-// 	const resultYear = []
-// 	if (String(year)[0]>1){
-// 		resultYeay.push('0')
-// 	}
-// 	if (String(year)[2]>1){
-// 		resultYear.push('0')
-// 	}
-// }
 
 function fixList(input) {
   let fixed = input.split('\r\n');
@@ -128,28 +117,113 @@ async function start() {
 }
 
 
-function academicPlan(col){
-	switch(col){
-		case 'major':
-			var major = document.querySelector("#CU_SIQSRI_ACPLN\\$scroll\\$0 > tbody > tr:nth-child(2) > td > table > tbody").childNodes[2].childNodes[15].innerText
-			return major
-		case 'institutionCode':
-			var institutionCode = document.querySelector("#CU_SIQSRI_ACPLN\\$scroll\\$0 > tbody > tr:nth-child(2) > td > table > tbody").childNodes[2].childNodes[1].innerText
-			return institutionCode
-		case 'semesterCode':
-			var semesterCode = document.querySelector("#CU_SIQSRI_ACPLN\\$scroll\\$0 > tbody > tr:nth-child(2) > td > table > tbody").childNodes[2].childNodes[11].innerText
-			return semesterCode
-		case 'academicStatus':
-			var academicStatus = document.querySelector("#CU_SIQSRI_ACPLN\\$scroll\\$0 > tbody > tr:nth-child(2) > td > table > tbody").childNodes[2].childNodes[17].innerText
-			return academicStatus
-		case 'effectiveDate':
-			var effectiveDate = document.querySelector("#CU_SIQSRI_ACPLN\\$scroll\\$0 > tbody > tr:nth-child(2) > td > table > tbody").childNodes[2].childNodes[7].innerText
-			return effectiveDate
+
+function termToYear(term,request){
+
+	var term_obj = {
+		year:null,
+		semester:null
+	}
+
+	if (term[0] == '1'){
+		term_obj.year = 2000
+	}
+	if (term[0] == '0'){
+			term_obj.year = 1900
+		}
+
+	function semester(termCode){
+		if (termCode[3]=='2')
+			return 'Spring'
+		if (termCode[3]=='6')
+			return 'Summer'
+		if (termCode[3]=='9')
+			return 'Fall'
+		else
+			return 'Invalid'
+	}
+
+	term_obj.year = String(term_obj.year)[0] + String(term_obj.year)[1] + term[1] + term[2]
+	term_obj.semester = semester(term)
+
+	switch(request){
+		case "year":
+			return term_obj.year
+		case "semester":	
+			return term_obj.semester
 
 	}
 }
 
 
+// 1--- : 2000+
+// 0--- : <1999
+
+// -##- : last two digits of year
+//    eg: 122- : 2022
+
+// ---2 : Spring Term
+// ---7 : Summer Term
+// ---9: Fall Term
+// ---6: ??
+
+
+// ['Inst', 'Student Car Nbr', 'Effective Date', 'Acad Prog Req Term', 'Acad Plan Req Term', 'Academic Plan', 'Description', 'Academic Status']
+
+// institutionCode,semesterCode,academicStatus,major,effectiveDate
+
+
+
+function academicPlan(request){
+
+
+	var table = document.querySelector("#CU_SIQSRI_ACPLN\\$scroll\\$0 > tbody > tr:nth-child(2) > td > table > tbody")
+
+	var AcadPlanRecTerm = []
+	for (i of table.children){
+		// console.log(i.children[5].innerText)
+		if (i.children[5].innerText != null){
+AcadPlanRecTerm.push([i.children[0].innerText,i.children[2].innerText,i.children[3].innerText,i.children[4].innerText,i.children[5].innerText,i.children[6].innerText,i.children[7].innerText,i.children[8].innerText])
+		}
+	}
+
+
+	for (i of AcadPlanRecTerm){
+		if (Number(i[4]) == Math.max(...AcadPlanRecTerm.map((item)=>item[4]).filter(Number))){
+			var semesterCode = i[4]
+			var effectiveDate = i[2]
+			var academicStatus = i[7]
+			var major = i[6].replace(",","")
+			var institutionCode = i[0]
+		}
+	}
+
+	// var table2 = document.querySelector("#CU_SIQSRI_ACSPL\\$scroll\\$0 > tbody > tr:nth-child(2) > td > table > tbody").children
+
+	// for (i of table2){
+	// 	if (i.children[5].innerText == institutionCode){
+	// 		var major = i.children[7].innerText
+	// 	}
+	// }
+
+
+	switch(request){
+		case "institutionCode":
+			return institutionCode
+		case "semesterCode":	
+			return semesterCode
+		case "academicStatus":	
+			return academicStatus
+		case "major":	
+			return major
+		case "effectiveDate":	
+			return effectiveDate
+		case "termToYear":
+			return termToYear(semesterCode,"year")
+		case "termToSemester":
+			return termToYear(semesterCode,"semester")
+	}
+}
 
 //Personal Info
 
@@ -322,11 +396,11 @@ function countGrades(returnType, compareGrades) {
 		resultArray.push(`${grade}:${itemCounts[grade]}`);
 	  }
 
-	  return resultArray.join(' '); // Join grade and frequency pairs with spaces
+	  return resultArray.join(' '); 
 
 	case 'gradesList':
-	  return gradesList.join(' '); // Join grades with spaces
-
+	  return gradesList.join(' '); 
+		  
 	case 'compareGrades':
 	  let nonAPlusToBMinusCount = 0;
 	  const totalGrades = gradesList.length;
@@ -419,7 +493,7 @@ function updateFoundlist(object){
 	localStorage.setItem('_listFound',JSON.stringify(listFound))
 }
 
-function Person(empId, fname, lname, email1, email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades,institutionCode,semesterCode,academicStatus,major,effectiveDate) {
+function Person(empId, fname, lname, email1, email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades,institutionCode,semesterCode,academicStatus,major,effectiveDate,termtoYear,termtoSemester) {
 	this.empId = empId;
     this.fname = fname;
     this.lname = lname;
@@ -445,6 +519,8 @@ function Person(empId, fname, lname, email1, email2,phone,gpa,minGPA,maxGPA,diff
 	this.academicStatus = academicStatus;
 	this.major = major;
 	this.effectiveDate = effectiveDate;
+	this.termtoYear = termtoYear;
+	this.termtoSemester = termtoSemester
 }
 
 function findInfo(studentID,gpaTreshold) {
@@ -455,9 +531,9 @@ function findInfo(studentID,gpaTreshold) {
         const email1 = personalInfo('email1').toLowerCase()
         const email2 =personalInfo('email2').toLowerCase()
 		const phone = personalInfo('phone1') === null ? personalInfo('phone2') : personalInfo('phone1')
-		const gpa = cumulativeGPA()
-		const minGPA = cumulativeGPA('min')
-		const maxGPA = cumulativeGPA('max')
+		const gpa = Number(cumulativeGPA()).toFixed(2)
+		const minGPA = Number(cumulativeGPA('min')).toFixed(2)
+		const maxGPA = Number(cumulativeGPA('max')).toFixed(2)
 		const diffGPA = cumulativeGPA('diff')
 		const riskGPA = cumulativeGPA('risk',gpaTreshold)
 		const recentSI = serviceIndicator('recent').replace('Description',"")
@@ -474,14 +550,13 @@ function findInfo(studentID,gpaTreshold) {
 		const academicStatus = academicPlan('academicStatus');
 		const major = academicPlan('major');
 		const effectiveDate = academicPlan('effectiveDate');
+		const termtoYear = academicPlan('termToYear')
+		const termtoSemester = academicPlan('termToSemester')
+	
 		
 
-		// //Catch if data not found
-		// email1 === undefined ? personalInfo('otherEmail') : null
-		// email2 === undefined ? personalInfo('otherEmail') : null
-
-		const finds = [Number(empId),fullName[0],fullName[1],email1,email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades,institutionCode,semesterCode,academicStatus,major,effectiveDate]
-        const personInfo = new Person(Number(empId),fullName[0],fullName[1],email1,email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades,institutionCode,semesterCode,academicStatus,major,effectiveDate);
+		const finds = [Number(empId),fullName[0],fullName[1],email1,email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades,institutionCode,semesterCode,academicStatus,major,effectiveDate,termtoYear,termtoSemester]
+        const personInfo = new Person(Number(empId),fullName[0],fullName[1],email1,email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades,institutionCode,semesterCode,academicStatus,major,effectiveDate,termtoYear,termtoSemester);
 		console.log(`Found ${studentID}`);
 		const isFound = true
         return personInfo;
@@ -495,7 +570,6 @@ function findInfo(studentID,gpaTreshold) {
 }
 
 //GPA calculation
-
 function  cumulativeGPA(key,gpaTreshold){
 	
 	function termHistoryTermInfoTable(){
@@ -503,7 +577,7 @@ function  cumulativeGPA(key,gpaTreshold){
 		return termHistoryTermInfoTable
 	}
 	switch (key) {
-	  case 'diff': //Difference between current and max GPA
+	  case 'diff': 
 		var termHistoryTermInfo = termHistoryTermInfoTable();
 		var termInfoCumGpa = [];
 
@@ -632,7 +706,6 @@ function statusData(){
 
 
 // Save list to local storage and call back
-
 if (localStorage.getItem('_listFound') == null){
 	console.log('No previous student list found')
 	console.log('Creating new list for found students info..')
@@ -651,7 +724,7 @@ var forceRedraw = function(element){
 if (!element) { return; }
 
 var n = document.createTextNode(' ');
-var disp = element.style.display;  // don't worry about previous display style
+var disp = element.style.display; 
 
 element.appendChild(n);
 element.style.display = 'none';
@@ -659,20 +732,17 @@ element.style.display = 'none';
 setTimeout(function(){
 	element.style.display = disp;
 	n.parentNode.removeChild(n);
-},20); // you can play with this timeout to make it as short as possible
+},20); 
 }
 
 forceRedraw(field)
 
 if (document.readyState === "complete" || document.readyState === "interactive") {
-    // Fully loaded!
 	console.log('Lets Start...');
 	start()   
 }else {
-    // Loading still in progress.
-    // To wait for it to complete, add "DOMContentLoaded" or "load" listeners.
+
     window.addEventListener("load", () => {
-        // Fully loaded!
 		start()
     });
 }

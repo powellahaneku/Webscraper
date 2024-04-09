@@ -71,7 +71,9 @@ function downloadExcel(data, filename) {
 
   const sheet = String.fromCharCode(65); // ASCII code for 'A'
   const blobData = [["sep=,"], ...dataArray].map(row => row.join(',')).join('\n');
-  const blob = new Blob([blobData], { type: 'text/csv' });
+
+  // Specify UTF-8 encoding
+  const blob = new Blob([blobData], { type: 'text/csv;charset=utf-8' });
 
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
@@ -79,6 +81,7 @@ function downloadExcel(data, filename) {
 
   link.click();
 }
+
 
 function exportListToTxt(list, fileName) {
   // Convert the array of objects to a newline-separated JSON-formatted string
@@ -200,7 +203,7 @@ function academicPlan(request){
 
 		if (item.getTime() === new Date(Math.max(...dates)).getTime()) {
 			// This block will execute if 'item' is the maximum date in 'dates'
-			console.log("Maximum date found:", item);
+			// console.log("Maximum date found:", item);
 
 			var semesterCode = i[4]
 			var effectiveDate = i[2]
@@ -404,7 +407,10 @@ function countGrades(returnType, compareGrades) {
 	  return resultArray.join(' '); 
 
 	case 'gradesList':
-	  return gradesList.join(' '); 
+	  
+	  console.log(String(gradesList.join(' ')))
+		
+	  return String(gradesList.join(' ')); 
 		  
 	case 'compareGrades':
 	  let nonAPlusToBMinusCount = 0;
@@ -536,10 +542,10 @@ function findInfo(studentID,gpaTreshold) {
         const email1 = personalInfo('email1').toLowerCase()
         const email2 =personalInfo('email2').toLowerCase()
 		const phone = personalInfo('phone1') === null ? personalInfo('phone2') : personalInfo('phone1')
-		const gpa = Number(cumulativeGPA()).toFixed(2)
-		const minGPA = Number(cumulativeGPA('min')).toFixed(2)
-		const maxGPA = Number(cumulativeGPA('max')).toFixed(2)
-		const diffGPA = cumulativeGPA('diff')
+		const gpa = Number(cumulativeGPA().toFixed(2))
+		const minGPA = Number(cumulativeGPA('min').toFixed(2))
+		const maxGPA = Number(cumulativeGPA('max').toFixed(2))
+		const diffGPA = Number(cumulativeGPA('diff').toFixed(2))
 		const riskGPA = cumulativeGPA('risk',gpaTreshold)
 		const recentSI = serviceIndicator('recent').replace('Description',"")
 		const allSI = serviceIndicator()	
@@ -698,7 +704,7 @@ function  cumulativeGPA(key,gpaTreshold){
 		  termInfoCumGpa.shift();
 		}
 
-		return termInfoCumGpa.length > 0 ? termInfoCumGpa[0] : 'N/A';
+		return termInfoCumGpa.length > 0 ? termInfoCumGpa[0] : 0;
 	}
 }
 
@@ -751,4 +757,5 @@ if (document.readyState === "complete" || document.readyState === "interactive")
 		start()
     });
 }
+
 

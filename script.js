@@ -180,32 +180,37 @@ function academicPlan(request){
 	var table = document.querySelector("#CU_SIQSRI_ACPLN\\$scroll\\$0 > tbody > tr:nth-child(2) > td > table > tbody")
 
 	var AcadPlanRecTerm = []
+
 	for (i of table.children){
-		// console.log(i.children[5].innerText)
-		if (i.children[5].innerText != null){
-AcadPlanRecTerm.push([i.children[0].innerText,i.children[2].innerText,i.children[3].innerText,i.children[4].innerText,i.children[5].innerText,i.children[6].innerText,i.children[7].innerText,i.children[8].innerText])
+		// console.log(i.children[0].children[0].innerText)
+		if (i.children[0].children[0].innerText != "Inst"){
+			// console.log(i.children[3].innerText)
+			if (i.children[3].innerText != null){
+		AcadPlanRecTerm.push([i.children[0].innerText,i.children[2].innerText,i.children[3].innerText,i.children[4].innerText,i.children[5].innerText,i.children[6].innerText,i.children[7].innerText,i.children[8].innerText])
+				}
 		}
-	}
 
+		}
 
-	for (i of AcadPlanRecTerm){
-		if (Number(i[4]) == Math.max(...AcadPlanRecTerm.map((item)=>item[4]).filter(Number))){
+	var dates = [];
+
+	for (let i of AcadPlanRecTerm) {
+		var item = new Date(i[2]);
+		dates.push(item);
+
+		if (item.getTime() === new Date(Math.max(...dates)).getTime()) {
+			// This block will execute if 'item' is the maximum date in 'dates'
+			console.log("Maximum date found:", item);
+
 			var semesterCode = i[4]
 			var effectiveDate = i[2]
 			var academicStatus = i[7]
 			var major = i[6].replace(",","")
 			var institutionCode = i[0]
 		}
+
+
 	}
-
-	// var table2 = document.querySelector("#CU_SIQSRI_ACSPL\\$scroll\\$0 > tbody > tr:nth-child(2) > td > table > tbody").children
-
-	// for (i of table2){
-	// 	if (i.children[5].innerText == institutionCode){
-	// 		var major = i.children[7].innerText
-	// 	}
-	// }
-
 
 	switch(request){
 		case "institutionCode":

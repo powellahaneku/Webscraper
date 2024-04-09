@@ -5,6 +5,10 @@ The JavaScript code serves as a web scraper to extract and analyze student infor
 
 [View Code](https://github.com/powellahaneku/Webscraper/blob/main/script.js)
 
+## Attributes
+empId	fname	lname	email1	email2	phone	gpa	minGPA	maxGPA	diffGPA	riskGPA	allSI	countSI	recentSI	riskSI	itemCounts	grades	compareResult	specificGradesCount	riskGrades	institutionCode	semesterCode	academicStatus	major	effectiveDate	termtoYear	termtoSemester
+
+
 ## Initial Instructions
 1. **Alert and Instructions**: Upon execution, the code displays an alert guiding the user and providing instructions on how to use the tool effectively.
 

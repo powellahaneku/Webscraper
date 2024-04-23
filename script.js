@@ -25,9 +25,28 @@ var list = [fixList(input)];
 
 var field = document.querySelector("#CU_SIQSRI_SRCH_EMPLID");
 
+// function performSearch() {
+//     ;
+// }
+
 function performSearch() {
-    let searchBtn = document.querySelector("#\\#ICSearch");
-    searchBtn.click();
+	  let searchBtn = document.querySelector('#PTS_CFG_CL_WRK_PTS_SRCH_BTN');
+	searchBtn.click()
+
+	setTimeout(() => {
+		let table = document.querySelector("#tdgbrPTS_CFG_CL_STD_RSL\\$0 > tbody");
+		if (table.childNodes.length > 0 || !document.querySelector("#tdgbrPTS_CFG_CL_STD_RSL\\$0 > tbody")) {
+			try {
+				console.log("Valid ID..");
+				var item = table.childNodes[0].click();
+				item.click()
+			} catch (error) {
+
+				} finally {
+				console.log('Opening Student Page..');
+			}
+		}
+	}, 1000)
 }
 
 function backToSearchPage(){
@@ -407,9 +426,7 @@ function countGrades(returnType, compareGrades) {
 	  return resultArray.join(' '); 
 
 	case 'gradesList':
-	  
-	  console.log(String(gradesList.join(' ')))
-		
+	  		
 	  return String(gradesList.join(' ')); 
 		  
 	case 'compareGrades':

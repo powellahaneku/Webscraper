@@ -4,6 +4,7 @@
 alert("QUICK GUIDE: \n\nWelcome, let's get you started!\n\nYou can copy data from your excel sheet.\n\nAlso, sometimes the DOM loads faster if you click the ID input box and right click \"inspect\" it before starting this code. Do that if this session crashes")
 
 var input = prompt("Student List: ");
+var fileName = prompt('Save this data under: ')
 
 // Metrics
 const gpaTreshold = 2.3 //GPA's under this will be flagged
@@ -61,7 +62,7 @@ function backToSearchPage(){
 		console.table(listFound) 
 		console.log(`Not Found: ${removeDuplicates(studentsNotFound) }`)
 		console.log('Downloading CSV...')
-		downloadExcel(listFound, "data.csv")
+		downloadExcel(listFound, `${fileName}.csv`)
 		exportListToTxt(studentsNotFound, 'not_found.txt')
 		// Check if the key exists in local storage
 		if (localStorage.getItem('_listFound')) {
@@ -255,27 +256,31 @@ function academicPlan(request){
 //Personal Info
 
 function personalInfo(field) {
-  switch (field) {
-	case 'empId':
-	  return document.querySelector("#CU_SIQSRI_SRCH_EMPLID").innerText;
-	case 'fullName':
-	  return document.querySelector("#PERSON_NAME_NAME_DISPLAY").innerText.split(' ');
-	case 'email1':
-	  return document.querySelector("#CU_SIQSRI_EMAIL_EMAIL_ADDR\\$0").innerText;
-	case 'email2':
-	  const email = document.querySelector("#CU_SIQSRI_EMAIL_EMAIL_ADDR\\$1").innerText;
-		  if (email == null || email == '') {
-			  email = "No Email Found";
-		  }
-		  return email;
 
+
+  switch (field) {
+		  
+	case 'empId':
+		  return document.querySelector("#CU_SIQSRI_SRCH_EMPLID").innerText;
+	case 'fullName':
+		  return document.querySelector("#PERSON_NAME_NAME_DISPLAY").innerText.split(' ');
+	case 'email1':
+		  const email1 = document.querySelector("#CU_SIQSRI_EMAIL_EMAIL_ADDR\\$0")?document.querySelector("#CU_SIQSRI_EMAIL_EMAIL_ADDR\\$0").innerText:null ;
+		  return email1
+	case 'email2':
+		  const email2 =  document.querySelector("#CU_SIQSRI_EMAIL_EMAIL_ADDR\\$1")? document.querySelector("#CU_SIQSRI_EMAIL_EMAIL_ADDR\\$1").innerText:null;
+		  return email2
 	case 'otherEmail':
-		  const otherEmail = document.getElementById("CU_SIQSRI_EMAIL_EMAIL_ADDR$0")
-			if (otherEmail == null || otherEmail == ' '|| otherEmail == undefined) {
-				otherEmail = "No Email Found";
-			}else{
-				return otherEmail.innerText
-			}
+		  const otherEmail =  document.getElementById("CU_SIQSRI_EMAIL_EMAIL_ADDR$0")?document.getElementById("CU_SIQSRI_EMAIL_EMAIL_ADDR$0").innerText:null;
+		  return otherEmail
+	case 'emailFix1':
+		  const [emailFix1] =[document.querySelector("#CU_SIQSRI_EMAIL_EMAIL_ADDR\\$0")?document.querySelector("#CU_SIQSRI_EMAIL_EMAIL_ADDR\\$0").innerText:null];
+		  return emailFix1
+	case 'emailFix2':
+		  const [homeEmail,otherEmail2] =[document.querySelector("#CU_SIQSRI_EMAIL\\$scroll\\$0 > tbody > tr:nth-child(2) > td > table").childNodes.length >3?document.querySelector("#CU_SIQSRI_EMAIL_EMAIL_ADDR\\$1").innerText:undefined,
+		  document.querySelector("#CU_SIQSRI_EMAIL_EMAIL_ADDR\\$1")? document.querySelector("#CU_SIQSRI_EMAIL_EMAIL_ADDR\\$1").innerText:undefined]
+		  const emailFix2 = [homeEmail,otherEmail2].filter(email => email != undefinded) === [] ? null : [homeEmail,otherEmail2].filter(email => email != undefinded)[0]
+		  return emailFix2
 		  
 	case 'phone1':
 		  const [p1] = [document.querySelector("#PERSONAL_PHONE_PHONE\\$0").innerText]
@@ -557,7 +562,7 @@ function findInfo(studentID,gpaTreshold) {
 		const empId = personalInfo('empId')
         const fullName = personalInfo('fullName')
         const email1 = personalInfo('email1').toLowerCase()
-        const email2 =personalInfo('email2').toLowerCase()
+        const email2 =personalInfo('email2') != undefined ? personalInfo('email2').toLowerCase() : null
 		const phone = personalInfo('phone1') === null ? personalInfo('phone2') : personalInfo('phone1')
 		const gpa = Number(cumulativeGPA().toFixed(2))
 		const minGPA = Number(cumulativeGPA('min').toFixed(2))

@@ -5,6 +5,7 @@ alert("QUICK GUIDE: \n\nWelcome, let's get you started!\n\nYou can copy data fro
 
 var input = prompt("Student List: ");
 var fileName = prompt('Save this data under: ')
+var simpleSearch = prompt('Type \'1\' for simple search and \'2\' for advanced search \n\n\n 1 - Simple Search (name,email,phone):\n 2 - Advanced Search:\n\n ') == 1 ? true : false
 
 // Metrics
 const gpaTreshold = 2.3 //GPA's under this will be flagged
@@ -499,17 +500,42 @@ async function openPage(studentEmpId) {
       console.log("Finding data...");
 
       function retry() {
-        if (findInfo() !== null) {
-          console.log('Tag found');
-          resolve(); // Resolve the promise when the data is found
-        } else {
-          retry();
-        }
+
+		  if (simpleSearch == false){
+		    if (advancedfindInfo() !== null) {
+	          console.log('Tag found');
+	          resolve(); // Resolve the promise when the data is found
+	        } else {
+	          retry();
+	        }		  
+		  }
+
+		if (simpleSearch == true){
+		  if (findInfo() !== null) {
+			console.log('Tag found');
+			resolve(); // Resolve the promise when the data is found
+		  } else {
+			retry();
+		  }		  
+		}
+
+		  
+
       }
 
-      var quickLook = findInfo(studentEmpId,gpaTreshold);
-      updateFoundlist(findInfo(studentEmpId,gpaTreshold));
-      console.log(quickLook);
+	if (simpleSearch == false){
+		var quickLook = advancedfindInfo(studentEmpId,gpaTreshold);
+      updateFoundlist(advancedfindInfo(studentEmpId,gpaTreshold));
+      console.log(quickLook)
+	}
+
+	if (simpleSearch == true){
+		var quickLook = findInfo(studentEmpId);
+	  updateFoundlist(findInfo(studentEmpId));
+	  console.log(quickLook)
+	}
+		
+      ;
       console.log("Found and saved data to 'listFound' list");
     }, 3000);
 
@@ -526,12 +552,22 @@ function updateFoundlist(object){
 	localStorage.setItem('_listFound',JSON.stringify(listFound))
 }
 
-function Person(empId, fname, lname, email1, email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades,institutionCode,semesterCode,academicStatus,major,effectiveDate,termtoYear,termtoSemester) {
+function Person(empId, fname, lname, email1, email2,phone) {
 	this.empId = empId;
     this.fname = fname;
     this.lname = lname;
     this.email1 = email1;
     this.email2 = email2;
+	this.phone = phone;
+
+}
+
+function advancedPerson(empId, fname, lname, email1, email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades,institutionCode,semesterCode,academicStatus,major,effectiveDate,termtoYear,termtoSemester,credits) {
+	this.empId = empId;
+	this.fname = fname;
+	this.lname = lname;
+	this.email1 = email1;
+	this.email2 = email2;
 	this.phone = phone;
 	this.gpa = gpa;
 	this.minGPA = minGPA;
@@ -554,15 +590,17 @@ function Person(empId, fname, lname, email1, email2,phone,gpa,minGPA,maxGPA,diff
 	this.effectiveDate = effectiveDate;
 	this.termtoYear = termtoYear;
 	this.termtoSemester = termtoSemester
+	this.credits = credits
 }
 
-function findInfo(studentID,gpaTreshold) {
+
+function advancedfindInfo(studentID,gpaTreshold) {
 	let isFound = false
-    try {
+	try {
 		const empId = personalInfo('empId')
-        const fullName = personalInfo('fullName')
-        const email1 = personalInfo('email1').toLowerCase()
-        const email2 =personalInfo('email2') != undefined ? personalInfo('email2').toLowerCase() : null
+		const fullName = personalInfo('fullName')
+		const email1 = personalInfo('email1').toLowerCase()
+		const email2 =personalInfo('email2') != undefined ? personalInfo('email2').toLowerCase() : null
 		const phone = personalInfo('phone1') === null ? personalInfo('phone2') : personalInfo('phone1')
 		const gpa = Number(cumulativeGPA().toFixed(2))
 		const minGPA = Number(cumulativeGPA('min').toFixed(2))
@@ -585,11 +623,37 @@ function findInfo(studentID,gpaTreshold) {
 		const effectiveDate = academicPlan('effectiveDate');
 		const termtoYear = academicPlan('termToYear')
 		const termtoSemester = academicPlan('termToSemester')
-	
-		
+		const credits = cumulativeGPA('credits')
 
-		const finds = [Number(empId),fullName[0],fullName[1],email1,email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades,institutionCode,semesterCode,academicStatus,major,effectiveDate,termtoYear,termtoSemester]
-        const personInfo = new Person(Number(empId),fullName[0],fullName[1],email1,email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades,institutionCode,semesterCode,academicStatus,major,effectiveDate,termtoYear,termtoSemester);
+
+
+		const finds = [Number(empId),fullName[0],fullName[1],email1,email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades,institutionCode,semesterCode,academicStatus,major,effectiveDate,termtoYear,termtoSemester,credits]
+		const personInfo = new advancedPerson(Number(empId),fullName[0],fullName[1],email1,email2,phone,gpa,minGPA,maxGPA,diffGPA,riskGPA,allSI,countSI,recentSI,riskSI,itemCounts,grades,compareResult,specificGradesCount,riskGrades,institutionCode,semesterCode,academicStatus,major,effectiveDate,termtoYear,termtoSemester,credits);
+		console.log(`Found ${studentID}`);
+		const isFound = true
+		return personInfo;
+	} catch (error) {
+		console.log('Error fetching  data:', error.message, `Cound not find ${studentID}`);
+
+	}
+	isFound? null : studentsNotFound.push(studentID)
+	console.log(`Not Found: ${studentID}`)
+
+}
+
+
+
+function findInfo(studentID) {
+	let isFound = false
+	
+    try {
+		const empId = personalInfo('empId')
+        const fullName = personalInfo('fullName')
+        const email1 = personalInfo('email1').toLowerCase()
+        const email2 =personalInfo('email2') != undefined ? personalInfo('email2').toLowerCase() : null
+		const phone = personalInfo('phone1') === null ? personalInfo('phone2') : personalInfo('phone1')
+		const finds = [Number(empId),fullName[0],fullName[1],email1,email2,phone]
+        const personInfo = new Person(Number(empId),fullName[0],fullName[1],email1,email2,phone);
 		console.log(`Found ${studentID}`);
 		const isFound = true
         return personInfo;
@@ -704,7 +768,10 @@ function  cumulativeGPA(key,gpaTreshold){
 			return "At Risk"
 		}else{
 			return "Safe"
-		}		
+		}	
+
+	case "credits":
+		return Number(document.querySelector("#CU_SIQSRI_SCTRM_\\$scroll\\$0 > tbody > tr:nth-child(3)").childNodes[0].childNodes[1].childNodes[1].childNodes[2].childNodes[21].innerText)
 
 
 	  default://GPA

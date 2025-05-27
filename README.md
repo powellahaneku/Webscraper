@@ -3,7 +3,7 @@
 ## Purpose
 The JavaScript code serves as a web scraper to extract and analyze student information from a specific web interface. It automates the process of gathering data related to students and their academic records.
 
-[View Code](https://github.com/powellahaneku/Webscraper/blob/main/script.js)
+[code depracated]
 
 ## Attributes
 empId	fname	lname	email1	email2	phone	gpa	minGPA	maxGPA	diffGPA	riskGPA	allSI	countSI	recentSI	riskSI	itemCounts	grades	compareResult	specificGradesCount	riskGrades	institutionCode	semesterCode	academicStatus	major	effectiveDate	termtoYear	termtoSemester

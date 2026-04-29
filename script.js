@@ -27,9 +27,6 @@ var list = [fixList(input)];
 
 var field = document.querySelector("#CU_SIQSRI_SRCH_EMPLID");
 
-// function performSearch() {
-//     ;
-// }
 
 function performSearch() {
 	  let searchBtn = document.querySelector('#PTS_CFG_CL_WRK_PTS_SRCH_BTN');
@@ -65,9 +62,7 @@ function backToSearchPage(){
 		console.log('Downloading CSV...')
 		downloadExcel(listFound, `${fileName}.csv`)
 		exportListToTxt(studentsNotFound, 'not_found.txt')
-		// Check if the key exists in local storage
 		if (localStorage.getItem('_listFound')) {
-			// Remove the key from local storage
 			localStorage.removeItem('_listFound');
 			console.log('Key "_listFound" removed from local storage.');
 		} else {
@@ -79,10 +74,8 @@ function backToSearchPage(){
 	}
 
 function downloadExcel(data, filename) {
-  // Filter out null values
   const cleanData = data.filter(i => i != null);
 
-  // Check if there's any data to export
   if (cleanData.length === 0) {
 	console.error("No valid data to export.");
 	return;
@@ -93,7 +86,6 @@ function downloadExcel(data, filename) {
   const sheet = String.fromCharCode(65); // ASCII code for 'A'
   const blobData = [["sep=,"], ...dataArray].map(row => row.join(',')).join('\n');
 
-  // Specify UTF-8 encoding
   const blob = new Blob([blobData], { type: 'text/csv;charset=utf-8' });
 
   const link = document.createElement("a");
@@ -105,28 +97,19 @@ function downloadExcel(data, filename) {
 
 
 function exportListToTxt(list, fileName) {
-  // Convert the array of objects to a newline-separated JSON-formatted string
   var txtContent = list.map(obj => JSON.stringify(obj)).join('\n');
-
-  // Create a Blob containing the text data
   var blob = new Blob([txtContent], { type: 'text/plain' });
 
-  // Create a link element
   var link = document.createElement('a');
 
-  // Set the link's href to a data URL representing the Blob
   link.href = window.URL.createObjectURL(blob);
 
-  // Set the download attribute to specify the file name
   link.download = fileName || 'exported_data.txt';
 
-  // Append the link to the document
   document.body.appendChild(link);
 
-  // Trigger a click on the link to prompt the user to download the file
   link.click();
 
-  // Remove the link from the document
   document.body.removeChild(link);
 }
 
@@ -180,23 +163,6 @@ function termToYear(term,request){
 }
 
 
-// 1--- : 2000+
-// 0--- : <1999
-
-// -##- : last two digits of year
-//    eg: 122- : 2022
-
-// ---2 : Spring Term
-// ---7 : Summer Term
-// ---9: Fall Term
-// ---6: ??
-
-
-// ['Inst', 'Student Car Nbr', 'Effective Date', 'Acad Prog Req Term', 'Acad Plan Req Term', 'Academic Plan', 'Description', 'Academic Status']
-
-// institutionCode,semesterCode,academicStatus,major,effectiveDate
-
-
 
 function academicPlan(request){
 
@@ -206,9 +172,7 @@ function academicPlan(request){
 	var AcadPlanRecTerm = []
 
 	for (i of table.children){
-		// console.log(i.children[0].children[0].innerText)
 		if (i.children[0].children[0].innerText != "Inst"){
-			// console.log(i.children[3].innerText)
 			if (i.children[3].innerText != null){
 		AcadPlanRecTerm.push([i.children[0].innerText,i.children[2].innerText,i.children[3].innerText,i.children[4].innerText,i.children[5].innerText,i.children[6].innerText,i.children[7].innerText,i.children[8].innerText])
 				}
@@ -223,8 +187,6 @@ function academicPlan(request){
 		dates.push(item);
 
 		if (item.getTime() === new Date(Math.max(...dates)).getTime()) {
-			// This block will execute if 'item' is the maximum date in 'dates'
-			// console.log("Maximum date found:", item);
 
 			var semesterCode = i[4]
 			var effectiveDate = i[2]
